@@ -2,41 +2,26 @@
 
 namespace Database\Seeders;
 
+use App\Models\Kontrak;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use Faker\Factory as Faker;
 
 class KontrakSeeder extends Seeder
 {
     public function run()
     {
-        DB::table('kontrak')->insert([
-            [
-                'tanggal_mulai' => '2024-10-12',
-                'tanggal_selesai' => '2024-10-22',
-                'deskripsi' => 'Kontrak Untuk Barang Baru 1',
-                'bukti_kontrak' => 'kontrak1.pdf',
-                'user_id' => 2,
-                'created_at' => now(),
-                'updated_at' => now()
-            ],
-            [
-                'tanggal_mulai' => '2024-11-01',
-                'tanggal_selesai' => '2024-10-20',
-                'deskripsi' => 'Kontrak Untuk Barang Baru 2',
-                'bukti_kontrak' => 'kontrak2.pdf',
-                'user_id' => 2,
-                'created_at' => now(),
-                'updated_at' => now()
-            ],
-            [
-                'tanggal_mulai' => '2024-11-10',
-                'tanggal_selesai' => '2024-11-25',
-                'deskripsi' => 'Kontrak Untuk Barang Baru 3',
-                'bukti_kontrak' => 'kontrak2.pdf',
-                'user_id' => 1,
-                'created_at' => now(),
-                'updated_at' => now()
-            ]
-        ]);
+        $faker = Faker::create();
+
+        // Loop untuk menambah 20 data kontrak
+        for ($i = 0; $i < 20; $i++) {
+            // Membuat kontrak dengan data acak, user_id 1
+            Kontrak::create([
+                'deskripsi' => $faker->sentence(),
+                'tanggal_mulai' => $faker->date(),
+                'tanggal_selesai' => $faker->date(),
+                'user_id' => 1,  // Set user_id ke 1
+                'bukti_kontrak' => 'kontrak_bukti/' . $faker->uuid . '.pdf', // Misal menyimpan file bukti kontrak sebagai pdf dengan nama acak
+            ]);
+        }
     }
 }

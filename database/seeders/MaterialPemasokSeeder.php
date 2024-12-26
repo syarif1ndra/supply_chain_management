@@ -2,41 +2,33 @@
 
 namespace Database\Seeders;
 
+use App\Models\MaterialPemasok;
+use App\Models\Pemasok;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use Faker\Factory as Faker;
 
 class MaterialPemasokSeeder extends Seeder
 {
     public function run()
     {
-        DB::table('material_pemasok')->insert([
-            [
-                'nama_material' => 'Material 1',
-                'stok' => 50,
-                'harga_satuan' => 100000,
-                'jenis_material' => 'Bagus',
-                'pemasok_id' => 2,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'nama_material' => 'Material 2',
-                'stok' => 100,
-                'harga_satuan' => 200000,
-                'jenis_material' => 'Bagus',
-                'pemasok_id' => 3,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'nama_material' => 'Material 3',
-                'stok' => 40,
-                'harga_satuan' => 300000,
-                'jenis_material' => 'Bagus',
-                'pemasok_id' => 2,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ]);
+        $faker = Faker::create();
+
+        // Ambil seluruh Pemasok yang ada
+        $pemasoks = Pemasok::all();
+
+        // Loop untuk menambah 20 data material pemasok
+        for ($i = 0; $i < 20; $i++) {
+            // Ambil pemasok secara acak
+            $pemasok = $pemasoks->random();
+
+            // Membuat material pemasok dengan data acak
+            MaterialPemasok::create([
+                'nama_material' => $faker->word(),
+                'stok' => $faker->numberBetween(10, 500),
+                'harga_satuan' => $faker->randomFloat(2, 10000, 500000),
+                'jenis_material' => $faker->word(),
+                'pemasok_id' => $pemasok->id, // Menghubungkan dengan pemasok yang ada
+            ]);
+        }
     }
 }

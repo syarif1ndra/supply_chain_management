@@ -9,25 +9,21 @@ class Kontrak extends Model
 {
     use HasFactory;
 
-    // Tentukan nama tabel
     protected $table = 'kontrak';
 
-    // Tentukan kolom yang dapat diisi (mass assignment)
     protected $fillable = [
         'deskripsi',
         'tanggal_mulai',
         'tanggal_selesai',
         'bukti_kontrak',
-        'user_id', // Kolom yang mereferensikan user
+        'user_id',
     ];
 
-    // Relasi dengan model Pemasok (hasMany)
     public function pemasok()
     {
         return $this->hasMany(Pemasok::class, 'kontrak_id');
     }
 
-    // Relasi dengan model User (belongsTo)
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

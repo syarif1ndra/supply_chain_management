@@ -26,7 +26,6 @@ class ProyekController extends Controller
             ->orderBy('proyek.nama_proyek')
             ->get();
         $analisis = collect($analisis);
-        // dd($analisis[0]['analisis']);
         return view('admin.proyek.home', compact('proyek', 'analisis'));
     }
 
@@ -68,10 +67,7 @@ class ProyekController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Proyek $proyek)
-    {
-        //
-    }
+    public function show(Proyek $proyek) {}
 
     /**
      * Show the form for editing the specified resource.
@@ -96,7 +92,6 @@ class ProyekController extends Controller
         $proyek = Proyek::findOrFail($id);
         $proyek->update($validated);
 
-        // Pastikan redirect ke rute yang benar
         return redirect()->route('admin.proyek')->with('success', 'Update proyek sukses');
     }
 

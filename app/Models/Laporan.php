@@ -11,7 +11,6 @@ class Laporan extends Model
 
     protected $table = 'laporan';
 
-    // Kolom yang bisa diisi secara massal
     protected $fillable = [
         'tanggal_laporan',
         'file_path',

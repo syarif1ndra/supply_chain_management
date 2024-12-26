@@ -19,10 +19,9 @@ class Pemasok extends Model
         'rating_pemasok',
     ];
 
-    // Relasi ke Kontrak
     public function kontrak()
     {
-        return $this->belongsTo(Kontrak::class, 'kontrak_id','id');
+        return $this->belongsTo(Kontrak::class, 'kontrak_id', 'id');
     }
 
     public function materialPemasok()
@@ -35,10 +34,8 @@ class Pemasok extends Model
         return $this->hasMany(OrderMaterial::class, 'order_id');
     }
 
-    // Model Pemasok
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-
 }

@@ -19,10 +19,6 @@ class Proyek extends Model
         'anggaran_proyek'
     ];
 
-    // public function kontrak()
-    // {
-    //     return $this->belongsTo(Kontrak::class, 'kontrak_id');
-    // }
 
     public function detailProyek()
     {

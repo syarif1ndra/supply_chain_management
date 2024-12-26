@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Pengiriman;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,7 +12,7 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    
+
 
     /**
      * The attributes that are mass assignable.
@@ -50,11 +49,9 @@ class User extends Authenticatable
         ];
     }
 
-    // app/Models/User.php
 
-public function pengirimans()
-{
-    return $this->hasMany(Pengiriman::class);
-}
-
+    public function pengirimans()
+    {
+        return $this->hasMany(Pengiriman::class);
+    }
 }

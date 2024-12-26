@@ -15,7 +15,6 @@ class ProfileController extends Controller
      */
     public function show()
     {
-        // Cek apakah user yang sedang login adalah admin
         if (auth()->user()->usertype === 'admin') {
             return view('admin.profile.show', [
                 'user' => auth()->user(),
@@ -32,7 +31,6 @@ class ProfileController extends Controller
      */
     public function edit()
     {
-        // Cek apakah user yang sedang login adalah admin
         if (auth()->user()->usertype === 'admin') {
             return view('admin.profile.edit', [
                 'user' => auth()->user(),
@@ -47,43 +45,35 @@ class ProfileController extends Controller
     /**
      * Memperbarui profil pengguna.
      */
-      public function update(Request $request)
+    public function update(Request $request)
     {
         $user = auth()->user();
 
-        // Validasi input termasuk foto
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048', // Maksimal 2MB
+            'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        // Update data pengguna
         $user->name = $request->input('name');
         $user->email = $request->input('email');
 
-        // Jika ada file foto diunggah
         if ($request->hasFile('photo')) {
-            // Simpan file baru di storage
             $photoPath = $request->file('photo')->store('profile_photos', 'public');
 
-            // Hapus foto lama jika ada
             if (!empty($user->photo)) {
                 Storage::disk('public')->delete($user->photo);
             }
 
-            // Simpan path foto baru
             $user->photo = $photoPath;
         }
 
-        // Simpan perubahan ke database
         $user->save();
 
-        // Redirect berdasarkan tipe pengguna
         if ($user->usertype === 'admin') {
             return redirect()->route('admin.dashboard')->with('success', 'Profil admin berhasil diperbarui.');
         }
@@ -96,7 +86,6 @@ class ProfileController extends Controller
      */
     public function changePassword()
     {
-        // Cek apakah user yang sedang login adalah admin
         if (auth()->user()->usertype === 'admin') {
             return view('admin.profile.change_password');
         }
@@ -123,12 +112,10 @@ class ProfileController extends Controller
         $user->password = Hash::make($request->password);
         $user->save();
 
-        // Cek jika pengguna adalah admin
         if ($user->usertype === 'admin') {
             return redirect()->route('admin.profile.show')->with('success', 'Password admin berhasil diperbarui.');
         }
 
         return redirect()->route('profile.show')->with('success', 'Password berhasil diperbarui.');
     }
-
 }

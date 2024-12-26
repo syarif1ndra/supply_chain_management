@@ -17,14 +17,16 @@ class PengirimanController extends Controller
     public function index()
     {
         $pengiriman = Pengiriman::with('orderMaterial')->paginate(10);
-        $totalPengiriman = Pengiriman::count(); // Hitung jumlah data pengiriman
+        $totalPengiriman = Pengiriman::count();
+
         return view('user.pengiriman.home', compact('pengiriman', 'totalPengiriman'));
     }
 
     public function indexForAdmin()
     {
         $pengiriman = Pengiriman::with('orderMaterial')->paginate(10);
-        $totalPengiriman = Pengiriman::count(); // Hitung jumlah data pengiriman
+        $totalPengiriman = Pengiriman::count();
+
         return view('admin.pengiriman.index', compact('pengiriman', 'totalPengiriman'));
     }
 
@@ -49,21 +51,19 @@ class PengirimanController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nomor_order' => 'required|string|exists:order_material,nomor_order', // Ubah dari order_id ke nomor_order
+            'nomor_order' => 'required|string|exists:order_material,nomor_order',
             'tanggal_kirim' => 'required|date',
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_kirim',
             'status_pengiriman' => 'required|string|max:255',
         ]);
 
-        // Cari OrderMaterial berdasarkan nomor_order
         $orderMaterial = OrderMaterial::where('nomor_order', $validated['nomor_order'])->first();
         if (!$orderMaterial) {
             return redirect()->back()->withErrors(['nomor_order' => 'Nomor order tidak ditemukan.']);
         }
 
-        // Tambahkan data pengiriman
         Pengiriman::create([
-            'order_id' => $orderMaterial->id, // Simpan ID order
+            'order_id' => $orderMaterial->id,
             'tanggal_kirim' => $validated['tanggal_kirim'],
             'tanggal_selesai' => $validated['tanggal_selesai'],
             'status_pengiriman' => $validated['status_pengiriman'],
@@ -89,26 +89,22 @@ class PengirimanController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Validasi input
         $validated = $request->validate([
-            'nomor_order' => 'required|string|exists:order_material,nomor_order', // Ubah dari order_id ke nomor_order
+            'nomor_order' => 'required|string|exists:order_material,nomor_order',
             'tanggal_kirim' => 'required|date',
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_kirim',
             'status_pengiriman' => 'required|string|max:255',
         ]);
 
-        // Cari pengiriman berdasarkan ID
         $pengiriman = Pengiriman::findOrFail($id);
 
-        // Cari OrderMaterial berdasarkan nomor_order
         $orderMaterial = OrderMaterial::where('nomor_order', $validated['nomor_order'])->first();
         if (!$orderMaterial) {
             return redirect()->back()->withErrors(['nomor_order' => 'Nomor order tidak ditemukan.']);
         }
 
-        // Update data pengiriman
         $pengiriman->update([
-            'order_id' => $orderMaterial->id, // Update ID order berdasarkan nomor_order
+            'order_id' => $orderMaterial->id,
             'tanggal_kirim' => $validated['tanggal_kirim'],
             'tanggal_selesai' => $validated['tanggal_selesai'],
             'status_pengiriman' => $validated['status_pengiriman'],

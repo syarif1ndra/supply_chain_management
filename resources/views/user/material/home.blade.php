@@ -36,25 +36,25 @@
                 <table class="min-w-full bg-white table-auto">
                     <thead class="bg-gray-50 text-black uppercase text-xs font-medium leading-normal">
                         <tr class="divide-x divide-gray-200">
-                            <th class="px-6 py-3 text-left text-sm font-semibold">No</th>
-                            <th class="px-6 py-3 text-left text-sm font-semibold">Nama Material</th>
-                            <th class="px-6 py-3 text-left text-sm font-semibold">Stok</th>
-                            <th class="px-6 py-3 text-right text-sm font-semibold">Harga Satuan</th>
-                            <th class="px-6 py-3 text-left text-sm font-semibold">Jenis Material</th>
-                            <th class="px-6 py-3 text-left text-sm font-semibold">Pemasok</th>
-                            <th class="px-6 py-3 text-left text-sm font-semibold">Aksi</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold">No</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold">Nama Material</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold">Stok</th>
+                            <th class="px-4 py-3 text-right text-sm font-semibold">Harga Satuan</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold">Jenis Material</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold">Pemasok</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @foreach ($materials as $material)
                             <tr class="divide-x divide-gray-200 hover:bg-gray-100 transition duration-300">
-                                <td class="px-6 py-4 text-sm">{{ $material->id }}</td>
-                                <td class="px-6 py-4 text-sm">{{ $material->nama_material }}</td>
-                                <td class="px-6 py-4 text-sm">{{ $material->stok }} pcs </td>
-                                <td class="px-6 py-4 text-right text-sm">Rp {{ number_format($material->harga_satuan, 2, ',', '.') }}</td>
-                                <td class="px-6 py-4 text-sm">{{ $material->jenis_material }}</td>
-                                <td class="px-6 py-4 text-sm">{{ $material->pemasok->nama_pemasok }}</td>
-                                <td class="px-6 py-4 text-sm">
+                                <td class="px-4 py-4 text-sm">{{ $material->id }}</td>
+                                <td class="px-4 py-4 text-sm">{{ $material->nama_material }}</td>
+                                <td class="px-4 py-4 text-sm">{{ $material->stok }} pcs </td>
+                                <td class="px-4 py-4 text-right text-sm">Rp {{ number_format($material->harga_satuan, 2, ',', '.') }}</td>
+                                <td class="px-4 py-4 text-sm">{{ $material->jenis_material }}</td>
+                                <td class="px-4 py-4 text-sm">{{ $material->pemasok->nama_pemasok }}</td>
+                                <td class="px-4 py-4 text-sm">
                                     <!-- Edit and Delete Actions -->
                                     <a href="{{ route('user.material.edit', $material->id) }}" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition duration-300 mr-2" aria-label="Edit Material">
                                         <i class="fas fa-edit"></i> Edit
@@ -72,12 +72,11 @@
                     </tbody>
                 </table>
             </div>
-
         </div>
+
+        <!-- Pagination -->
         <div class="mt-4 flex justify-center">
-            {{ $materials->links('vendor.pagination.custom-pagination') }} <!-- Pastikan menggunakan $pemasok untuk pagination -->
-        </div>
-
+            {{ $materials->links('vendor.pagination.custom-pagination') }} <!-- Pastikan menggunakan $materials untuk pagination -->
         </div>
     </div>
 </body>

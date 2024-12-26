@@ -9,8 +9,7 @@ class MaterialPemasok extends Model
 {
     use HasFactory;
 
-    protected $table = 'material_pemasok'; // Nama tabel di database
-
+    protected $table = 'material_pemasok';
     protected $fillable = [
         'nama_material',
         'stok',
@@ -19,16 +18,14 @@ class MaterialPemasok extends Model
         'pemasok_id'
     ];
 
-    // Relasi ke tabel Pengiriman
     public function pengiriman()
     {
         return $this->hasMany(Pengiriman::class, 'pengiriman_id');
     }
 
-    // Relasi ke tabel OrderMaterial
     public function orderMaterials()
     {
-        return $this->hasMany(OrderMaterial::class, 'material_id','id');
+        return $this->hasMany(OrderMaterial::class, 'material_id', 'id');
     }
 
     public function pemasok()

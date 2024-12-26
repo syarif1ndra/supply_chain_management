@@ -12,19 +12,16 @@ class TanggalSelesaiNotification extends Notification
 
     protected $tanggalSelesai;
 
-    // Konstruktor untuk menerima tanggal_selesai
     public function __construct($tanggalSelesai)
     {
         $this->tanggalSelesai = $tanggalSelesai;
     }
 
-    // Mengirim notifikasi melalui berbagai saluran
     public function via($notifiable)
     {
-        return ['database', 'mail']; // Bisa disesuaikan, untuk menggunakan database dan email
+        return ['database', 'mail'];
     }
 
-    // Menampilkan konten notifikasi
     public function toDatabase($notifiable)
     {
         return [
@@ -33,12 +30,11 @@ class TanggalSelesaiNotification extends Notification
         ];
     }
 
-    // Mengirim notifikasi melalui email
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('Pemberitahuan: Tanggal selesai Anda adalah ' . $this->tanggalSelesai)
-                    ->action('Lihat Profil', url('/profile'))
-                    ->line('Terima kasih telah menggunakan aplikasi kami!');
+            ->line('Pemberitahuan: Tanggal selesai Anda adalah ' . $this->tanggalSelesai)
+            ->action('Lihat Profil', url('/profile'))
+            ->line('Terima kasih telah menggunakan aplikasi kami!');
     }
 }

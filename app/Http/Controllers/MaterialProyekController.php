@@ -16,36 +16,35 @@ class MaterialProyekController extends Controller
      */
     public function index()
     {
-        $materials = MaterialProyek::paginate(10); // Ambil semua data material proyek
+        $materials = MaterialProyek::paginate(10);
         return view('admin.material_proyek.index', compact('materials'));
     }
     public function edit($id)
-{
-    $material = MaterialProyek::findOrFail($id);
-    $proyekList = Proyek::where('status', 'aktif')->get(); // Filter proyek yang aktif
+    {
+        $material = MaterialProyek::findOrFail($id);
+        $proyekList = Proyek::where('status', 'aktif')->get();
+        return view('admin.material_proyek.edit', compact('material', 'proyekList'));
+    }
 
-    return view('admin.material_proyek.edit', compact('material', 'proyekList'));
-}
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'nama_material' => 'required',
+            'stok' => 'required|integer',
+            'harga_satuan' => 'required|numeric',
+            'proyek_id' => 'required|exists:proyek,id,status,aktif',
+        ]);
 
-public function update(Request $request, $id)
-{
-    $request->validate([
-        'nama_material' => 'required',
-        'stok' => 'required|integer',
-        'harga_satuan' => 'required|numeric',
-        'proyek_id' => 'required|exists:proyek,id,status,aktif', // Validasi id proyek yang aktif
-    ]);
+        $material = MaterialProyek::findOrFail($id);
+        $material->update([
+            'nama_material' => $request->nama_material,
+            'stok' => $request->stok,
+            'harga_satuan' => $request->harga_satuan,
+            'proyek_id' => $request->proyek_id,
+        ]);
 
-    $material = MaterialProyek::findOrFail($id);
-    $material->update([
-        'nama_material' => $request->nama_material,
-        'stok' => $request->stok,
-        'harga_satuan' => $request->harga_satuan,
-        'proyek_id' => $request->proyek_id, // Update proyek_id
-    ]);
-
-    return redirect()->route('material_proyek.index')->with('success', 'Material proyek berhasil diperbarui!');
-}
+        return redirect()->route('material_proyek.index')->with('success', 'Material proyek berhasil diperbarui!');
+    }
 
 
 
@@ -55,36 +54,28 @@ public function update(Request $request, $id)
      */
     public function syncFromPengiriman()
     {
-        // Ambil data pengiriman yang berstatus selesai
         $pengirimanSelesai = Pengiriman::where('status_pengiriman', 'selesai')->get();
 
         foreach ($pengirimanSelesai as $pengiriman) {
-            // Cek apakah data material_proyek sudah ada berdasarkan pengiriman_id
             $existingMaterial = MaterialProyek::where('pengiriman_id', $pengiriman->id)->first();
 
             if (!$existingMaterial) {
-                // Ambil data order_material terkait dari pengiriman
-                $orderMaterial = $pengiriman->orderMaterial; // Relasi ke tabel order_material
-
+                $orderMaterial = $pengiriman->orderMaterial;
                 if ($orderMaterial) {
-                    // Tambahkan data ke material_proyek
                     $materialProyek = MaterialProyek::create([
                         'nama_material' => $orderMaterial->nama_material,
-                        'stok' => $orderMaterial->jumlah_order, // Gunakan jumlah_order, bukan stok
+                        'stok' => $orderMaterial->jumlah_order,
                         'harga_satuan' => $orderMaterial->harga_satuan,
                         'pengiriman_id' => $pengiriman->id,
-                        'material_id' => null, // Sesuaikan jika diperlukan
+                        'material_id' => null,
                     ]);
 
-                    // Kurangi stok material sesuai dengan jumlah yang digunakan di DetailProyek
                     $detailProyek = DetailProyek::where('material_id', $materialProyek->id)->get();
 
                     foreach ($detailProyek as $detail) {
-                        // Kurangi stok berdasarkan jumlah_digunakan yang tercatat di DetailProyek
                         $materialProyek->stok -= $detail->jumlah_digunakan;
                     }
 
-                    // Simpan perubahan stok setelah pengurangan
                     $materialProyek->save();
                 }
             }
@@ -92,6 +83,4 @@ public function update(Request $request, $id)
 
         return redirect()->route('material_proyek.index')->with('success', 'Data material proyek berhasil disinkronisasi!');
     }
-
-
 }

@@ -28,51 +28,39 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        // Autentikasi pengguna
         $request->authenticate();
 
-        // Regenerasi session untuk meningkatkan keamanan
         $request->session()->regenerate();
 
-        // Ambil user yang sedang login
         $user = $request->user();
 
-        // Pesan notifikasi default
         $pesan_notifikasi = '';
 
-        // Cek jika pengguna adalah admin
         if ($user->usertype === 'user') {
             $pesan_notifikasi = "Selamat datang user";
         } else {
-            // Query ke tabel pengiriman untuk mengambil tanggal_selesai terdekat
             $tanggal_selesai_terdekat = DB::table('pengiriman')
-                ->where('status_pengiriman', '!=', 'batal') // Kecualikan pengiriman yang dibatalkan
-                ->where('tanggal_selesai', '>', now())      // Hanya pengiriman dengan tanggal selesai di masa depan
-                ->orderBy('tanggal_selesai', 'asc')         // Urutkan berdasarkan tanggal selesai terdekat
-                ->value('tanggal_selesai');                 // Ambil nilai tanggal_selesai terdekat
+                ->where('status_pengiriman', '!=', 'batal')
+                ->where('tanggal_selesai', '>', now())
+                ->orderBy('tanggal_selesai', 'asc')
+                ->value('tanggal_selesai');
 
-            // Jika ada tanggal selesai terdekat, hitung selisih waktu
             if ($tanggal_selesai_terdekat) {
                 $selisih = now()->diff(Carbon::parse($tanggal_selesai_terdekat));
 
-                // Format selisih waktu
-                $days = $selisih->d; // Hari
-                $hours = $selisih->h; // Jam
-                $minutes = $selisih->i; // Menit
+                $days = $selisih->d;
+                $hours = $selisih->h;
+                $minutes = $selisih->i;
 
-                // Buat pesan notifikasi untuk pengguna biasa
                 $pesan_notifikasi = "$days hari $hours jam $minutes menit lagi barang datang (tanggal: "
                     . Carbon::parse($tanggal_selesai_terdekat)->format('l, j F Y H:i:s') . ")";
             } else {
-                // Jika tidak ada pengiriman yang terjadwal
                 $pesan_notifikasi = "Tidak ada pengiriman yang dijadwalkan.";
             }
         }
 
-        // Set session notifikasi
         session()->flash('status', $pesan_notifikasi);
 
-        // Periksa tipe pengguna dan arahkan ke dashboard yang sesuai
         if ($user->usertype === 'admin') {
             return redirect('admin/dashboard');
         }

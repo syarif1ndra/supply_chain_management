@@ -16,7 +16,9 @@ class MaterialPemasokController extends Controller
     public function index()
     {
         $materials = MaterialPemasok::paginate(10);
-        return view('user.material.home', compact('materials'));
+        $topMaterials = MaterialPemasok::orderBy('stok', 'desc')->take(5)->get();
+
+        return view('user.material.home', compact('materials', 'topMaterials'));
     }
 
     public function indexForAdmin()
@@ -39,7 +41,6 @@ class MaterialPemasokController extends Controller
      */
     public function store(Request $request)
     {
-        //
         $validated = $request->validate([
             'nama_material' => 'required|string',
             'stok' => 'required|integer',
@@ -57,17 +58,13 @@ class MaterialPemasokController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(MaterialPemasok $material)
-    {
-        //
-    }
+    public function show(MaterialPemasok $material) {}
 
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(MaterialPemasok $material, int $id)
     {
-        //
         $material = MaterialPemasok::find($id);
         return view('user.material.edit', compact('material'));
     }
@@ -77,7 +74,6 @@ class MaterialPemasokController extends Controller
      */
     public function update(Request $request, int $id, MaterialPemasok $material)
     {
-        // Validasi data
         $validated = $request->validate([
             'nama_material' => 'required|string',
             'stok' => 'required|integer',
@@ -87,11 +83,9 @@ class MaterialPemasokController extends Controller
             'detail_proyek' => 'nullable'
         ]);
 
-        // Cari material berdasarkan ID dan update
         $material = MaterialPemasok::findOrFail($id);
         $material->update($validated);
 
-        // Redirect ke halaman daftar material dengan pesan sukses
         return redirect()->route('user.material')->with('success', 'Material berhasil diupdate');
     }
 
@@ -101,13 +95,10 @@ class MaterialPemasokController extends Controller
      */
     public function destroy(MaterialPemasok $material, int $id)
     {
-        // Cari berdasarkan ID
         $material = MaterialPemasok::findOrFail($id);
 
-        // Hapus pengiriman
         $material->delete();
 
-        // Redirect kembali ke halaman pengiriman dengan pesan sukses
         return redirect()->route('user.material')->with('success', 'Material berhasil dihapus!');
     }
 }

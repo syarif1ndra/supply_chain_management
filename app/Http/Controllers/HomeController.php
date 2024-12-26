@@ -16,11 +16,9 @@ class HomeController extends Controller
 
     public function dashboardUser()
     {
-        $totalPengiriman = Pengiriman::count(); // Total pengiriman
-        $totalMaterialPemasok = MaterialPemasok::count(); // Misalnya: tambahkan logika untuk menghitung material pemasok
-        $totalKontrak = Kontrak::count(); // Misalnya: tambahkan logika untuk menghitung kontrak
-
-        // Kirim data ke view
+        $totalPengiriman = Pengiriman::count();
+        $totalMaterialPemasok = MaterialPemasok::count();
+        $totalKontrak = Kontrak::count();
         return view('user.dashboard', compact('totalPengiriman', 'totalMaterialPemasok', 'totalKontrak'));
     }
 }
